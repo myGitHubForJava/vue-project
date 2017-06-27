@@ -13,7 +13,7 @@
           </div>
           <div class="item-info-subtitle">
             <ul v-for="list of data.items">
-              <li>{{ list.intro }}</li>
+              <li v-if="list.intro">{{ list.intro }}</li>
             </ul>
           </div>
           <div class="item-info-price">

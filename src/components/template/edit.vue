@@ -2,7 +2,7 @@
   <mn-scroller>
     <mn-section>
       <mn-letter>
-        <h1>新增模版</h1>
+        <h1>编辑模版</h1>
       </mn-letter>
     </mn-section>
 
@@ -116,7 +116,7 @@
   import products from './products'
   import Confirm from 'vue-human/utils/Confirm'
 
-  import {createTemplate} from '../../axios/template'
+  import {editTemplate, showTemplate} from '../../axios/template'
 
   export default {
     data () {
@@ -250,7 +250,7 @@
         formData: {},
         title: '',
         text: '标题',
-        isSaved: false,
+        isSaved: true,
         indexForAbove: null,
         modulesForm: {
           url: '',
@@ -298,6 +298,14 @@
           return ''
         }
       }
+    },
+    mounted () {
+      return showTemplate(this.$route.query.id).then(response => {
+        this.config = JSON.parse(response.data.JsonData.data)
+        console.log(this.config)
+      }).catch(error => {
+        console.log(error)
+      })
     },
     methods: {
       addModule (index) {
@@ -422,7 +430,6 @@
             this.templateName = key.templateName
           }
         })
-        console.log(this.skus)
         let data = {
           'Title': this.templateName,
           'JsonData': {
@@ -430,7 +437,7 @@
             'skus': this.skus
           }
         }
-        return createTemplate(data).then(() => {
+        return editTemplate(data, this.$route.query.id).then(() => {
           this.$router.push({ name: 'template' })
           Message.create({type: 'success', message: '保存成功'}).show()
         }).catch(error => {

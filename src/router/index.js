@@ -25,6 +25,16 @@ const router = new VueRouter({
       path: '/create',
       name: 'create',
       component: resolve => { require(['../components/template/create'], resolve) }
+    },
+    {
+      path: '/view',
+      name: 'view',
+      component: resolve => { require(['../components/template/view'], resolve) }
+    },
+    {
+      path: '/edit',
+      name: 'edit',
+      component: resolve => { require(['../components/template/edit'], resolve) }
     }
   ]
 })

@@ -31,6 +31,14 @@ module.exports = {
       '/templates': {
         target: 'http://10.1.3.48:9011',
         changeOrigin: true
+      },
+      '/login': {
+        target: 'http://10.1.3.48:9011',
+        changeOrigin: true
+      },
+      '/sale': {
+        target: 'http://10.1.3.48:9011',
+        changeOrigin: true
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

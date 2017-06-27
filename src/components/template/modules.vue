@@ -3,7 +3,7 @@
     <mn-section>
       <mn-card>
         <!-- id-->
-        <mn-card-item v-if="data.type!=='button'">
+        <mn-card-item v-if="data.type!=='button'&&data.type!=='other'">
           <mn-card-prefix>
             <mn-label>
             id:
@@ -109,25 +109,35 @@
           </mn-card-body>
         </mn-card-item>
         <!-- margin-->
-        <mn-card-item v-if="data.type!=='button'&&data.type!=='tab'">
+        <mn-card-item v-if="data.type!=='button'&&data.type!=='tab'&&data.type!=='other'">
           <mn-card-prefix>
             <mn-label>
             外边距:
             </mn-label>
           </mn-card-prefix>
           <mn-card-body>
-            <mn-input v-model="data.margin"></mn-input>
+            <div class="inputs">
+              <input v-model="margin[0]" placeholder="上" />
+              <input v-model="margin[1]"  placeholder="右"  />
+              <input v-model="margin[2]"  placeholder="下"  />
+              <input v-model="margin[3]" placeholder="左" @blur="bindStyle('margin')" />
+            </div>
           </mn-card-body>
         </mn-card-item>
         <!-- padding-->
-        <mn-card-item v-if="data.type!=='button'&&data.type!=='tab'">
+        <mn-card-item v-if="data.type!=='button'&&data.type!=='tab'&&data.type!=='other'">
           <mn-card-prefix>
             <mn-label>
             内边距:
             </mn-label>
           </mn-card-prefix>
           <mn-card-body>
-            <mn-input v-model="data.padding"></mn-input>
+            <div class="inputs">
+              <input v-model="padding[0]" placeholder="上" />
+              <input v-model="padding[1]"  placeholder="右"  />
+              <input v-model="padding[2]"  placeholder="下"  />
+              <input v-model="padding[3]" placeholder="左" @blur="bindStyle('padding')"  />
+            </div>
           </mn-card-body>
         </mn-card-item>
         <!-- url-->
@@ -152,8 +162,29 @@
               <mn-input v-model="data.src"></mn-input>
           </mn-card-body>
         </mn-card-item>
+        <mn-card-item v-if="data.type==='other'">
+          <mn-card-prefix>
+            <mn-label >
+            项目名称:
+            </mn-label>
+          </mn-card-prefix>
+          <mn-card-body>
+              <mn-input v-model="data.templateName"></mn-input>
+          </mn-card-body>
+        </mn-card-item>
+        <!-- 标题-->
+        <mn-card-item v-if="data.type==='other'">
+          <mn-card-prefix>
+            <mn-label >
+            标题:
+            </mn-label>
+          </mn-card-prefix>
+          <mn-card-body>
+              <mn-input v-model="data.title"></mn-input>
+          </mn-card-body>
+        </mn-card-item>
         <!-- background-->
-        <div v-if="data.type==='products'||data.type==='products'" style="border-top: solid 1px rgba(0, 0, 0, 0.1);">
+        <div v-if="data.type==='products'||data.type==='products'||data.type==='other'" style="border-top: solid 1px rgba(0, 0, 0, 0.1);">
           <mn-card-item>
             <mn-card-prefix>
               <mn-label>
@@ -206,86 +237,84 @@
           </mn-card-item>
         </div>
         <!-- 多图 -->
-        <div v-if="data.type!=='image'&&data.type!=='button'">
-          <div v-for="item of data.items" style="border-top: solid 1px rgba(0, 0, 0, 0.1);">
-            <!-- intro-->
-            <mn-card-item v-if="item.intro!==undefined">
-              <mn-card-prefix>
-                <mn-label >
-                  介绍:
-                </mn-label>
-              </mn-card-prefix>
-              <mn-card-body>
-                <mn-input v-model="item.intro"></mn-input>
-              </mn-card-body>
-            </mn-card-item>
-            <!-- url-->
-            <mn-card-item v-if="item.url!==undefined">
-              <mn-card-prefix>
-                <mn-label>
-                url:
-                </mn-label>
-              </mn-card-prefix>
-              <mn-card-body>
-                <mn-input v-model="item.url"></mn-input>
-              </mn-card-body>
-            </mn-card-item>
-            <!-- 图片-->
-            <mn-card-item v-if="item.src!==undefined">
-              <mn-card-prefix>
-                <mn-label >
-                  图片:
-                </mn-label>
-              </mn-card-prefix>
-              <mn-card-body>
-                <mn-input v-model="item.src"></mn-input>
-              </mn-card-body>
-            </mn-card-item>
-            <!-- 链接-->
-            <mn-card-item v-if="item.target!==undefined">
-              <mn-card-prefix>
-                <mn-label >
-                  链接:
-                </mn-label>
-              </mn-card-prefix>
-              <mn-card-body>
-                <mn-input v-model="item.target"></mn-input>
-              </mn-card-body>
-            </mn-card-item>
-            <!-- tab名-->
-            <mn-card-item v-if="item.text!==undefined">
-              <mn-card-prefix>
-                <mn-label >
-                  tab名:
-                </mn-label>
-              </mn-card-prefix>
-              <mn-card-body>
-                <mn-input v-model="item.text"></mn-input>
-              </mn-card-body>
-            </mn-card-item>
-            <!-- sku-->
-            <mn-card-item v-if="item.sku!==undefined">
-              <mn-card-prefix>
-                <mn-label >
-                  sku:
-                </mn-label>
-              </mn-card-prefix>
-              <mn-card-body>
-                <mn-input v-model="item.sku"></mn-input>
-              </mn-card-body>
-            </mn-card-item>
-            <!-- tip-->
-            <mn-card-item v-if="item.tip!==undefined">
-              <mn-card-prefix>
-                <mn-label >
-                  tip:
-                </mn-label>
-              </mn-card-prefix>
-              <mn-card-body>
-                <mn-input v-model="item.tip"></mn-input>
-              </mn-card-body>
-            </mn-card-item>
-          </div>
+        <div v-if="data.type!=='image'&&data.type!=='button'&&data.type!=='other'" style="border-top: solid 1px rgba(0, 0, 0, 0.1);">
+          <!-- intro-->
+          <mn-card-item v-if="data.type==='product'">
+            <mn-card-prefix>
+              <mn-label >
+                介绍:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.intro" @keyup.enter="addMore()"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
+          <!-- url-->
+          <mn-card-item v-if="data.type==='banner'">
+            <mn-card-prefix>
+              <mn-label>
+              url:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.url"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
+          <!-- 图片-->
+          <mn-card-item v-if="data.type==='banner'">
+            <mn-card-prefix>
+              <mn-label >
+                图片:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.src"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
+          <!-- 链接-->
+          <mn-card-item v-if="data.type==='tab'">
+            <mn-card-prefix>
+              <mn-label >
+                链接:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.target"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
+          <!-- tab名-->
+          <mn-card-item v-if="data.type==='tab'">
+            <mn-card-prefix>
+              <mn-label >
+                tab名:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.text"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
+          <!-- sku-->
+          <mn-card-item v-if="data.type==='products'">
+            <mn-card-prefix>
+              <mn-label >
+                sku:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.sku"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
+          <!-- tip-->
+          <mn-card-item v-if="data.type==='products'">
+            <mn-card-prefix>
+              <mn-label >
+                tip:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.tip"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
           <mn-card-item>
             <mn-card-body>
               <mn-icon :name="icons.plus"></mn-icon>
@@ -293,6 +322,38 @@
             </mn-card-body>
           </mn-card-item>
         </div>
+        <mn-card-item v-if="data.type!=='image'&&data.type!=='button'">
+          <mn-card-body>
+            <ul class="items-list" v-if="data.type==='banner'">
+              <li v-for="(item, index) of data.items" @click="editArr(index)" v-if="item.src!==''||item.url!==''" :key="index">
+              <div>[ 图片：{{ item.src.length>8?item.src.substring(0,8)+'...':item.src }}, 链接：{{ item.url.length>8?item.url.substring(0,8)+'...':item.url }} ]</div>
+              <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
+              </li>
+            </ul>
+            <ul class="items-list" v-if="data.type==='product'">
+              <li v-for="(item, index)  of data.items" v-if="item.intro!==''">
+                <div>[ 介绍：{{ item.intro.length>8?item.intro.substring(0,8)+'...':item.intro }}]</div>
+                <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
+              </li>
+            </ul>
+            <ul class="items-list" v-if="data.type==='tab'">
+              <li v-for="(item, index)  of data.items" v-if="item.target!==''||item.text!==''">
+                <div>
+                  [ 链接：{{ item.target.length>8?item.target.substring(0,8)+'...':item.target }}, tab名：{{ item.text.length>8?item.text.substring(0,8)+'...':item.text }} ]
+                </div>
+                <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
+              </li>
+            </ul>
+            <ul class="items-list" v-if="data.type==='products'">
+              <li v-for="(item, index)  of data.items" v-if="item.sku!==''||item.tip!==''">
+                <div>
+                  [ sku：{{ item.sku.length>8?item.sku.substring(0,8)+'...':item.sku }}, 标签：{{ item.tip.length>8?item.tip.substring(0,8)+'...':item.tip }}]
+                </div>
+                <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
+              </li>
+            </ul>
+          </mn-card-body>
+        </mn-card-item>
         <mn-card-item>
           <mn-card-body>
             <mn-btn theme="primary" size="sm" @click.native="cancel">删除</mn-btn>
@@ -314,12 +375,12 @@ import FileUpload from 'vue-upload-component'
 export default {
   data () {
     return {
-      imgs: [],
       icons: {
         arrowLeft: require('vue-human-icons/js/ios/arrow-left'),
         plus: require('vue-human-icons/js/ios/plus-empty'),
         arrowDown: require('vue-human-icons/js/ios/arrow-down'),
-        arrowUp: require('vue-human-icons/js/ios/arrow-up')
+        arrowUp: require('vue-human-icons/js/ios/arrow-up'),
+        iosCloseOutline: require('vue-human-icons/js/ios/close-outline')
       },
       radioOptions: [
         {
@@ -340,7 +401,9 @@ export default {
           label: '无',
           value: false
         }
-      ]
+      ],
+      margin: [],
+      padding: []
     }
   },
   components: {
@@ -354,10 +417,9 @@ export default {
       type: Object,
       required: true
     },
-    isShow: {
-      type: Boolean,
-      required: true,
-      default: false
+    form: {
+      type: Object,
+      required: true
     }
   },
   methods: {
@@ -368,15 +430,65 @@ export default {
       this.$emit('save')
     },
     addMore () {
-      this.$emit('addMore')
+      this.$emit('addMore', this.form)
     },
     addAbove () {
       this.$emit('addAbove')
+    },
+    remove (index) {
+      this.$emit('removeArr', index)
+    },
+    bindStyle (type) {
+      this.data[type] = ''
+      this[type].forEach(key => {
+        this.data[type] += key.trim() + ' '
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .items-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
 
+    li {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 10px;
+
+      span {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .inputs {
+    display: flex;
+    flex-wrap: nowrap;
+
+    input {
+      outline: none;
+      border: none;
+      border-left: 1px solid rgba(0,0,0,0.2);
+      height: 2rem;
+      line-height: 2rem;
+      width: 25%;
+      padding-left: 3px;
+
+      &::-webkit-input-placeholder {
+        color: #aaa;
+        font-size: 12px;
+        text-align: center;
+      }
+
+      &:focus {
+        border-left-color: #3385ff;
+      }
+    }
+  }
 </style>

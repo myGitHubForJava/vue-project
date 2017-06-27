@@ -64,7 +64,7 @@
         },
         password: {
           required,
-          minLength: minLength(6),
+          minLength: minLength(4),
           maxLength: maxLength(20)
         }
       }
@@ -82,11 +82,39 @@
         form.loading = true
         this.$refs.submit.loading = true
 
-        setTimeout(() => {
-          form.loading = false
-          this.$refs.submit.loading = false
-          Message.create({ message: '数据验证成功' }).show()
-        }, 2000)
+        this.$store.dispatch('user.signIn', this.models)
+          .then(response => {
+            console.log(1)
+            form.loading = false
+            this.$refs.submit.loading = false
+            Message.create({type: 'success', message: '登录成功'}).show()
+
+            setTimeout(() => {
+              this.$router.push({path: '/template'})
+            }, 500)
+          })
+          .catch(error => {
+            if (error.response) {
+              if (error.response.status !== 404) {
+                this.$message({
+                  type: 'error',
+                  message: error.response.data.message
+                })
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: '找不到接口, 请联系开发部门'
+                })
+              }
+            } else {
+              this.$message({
+                showClose: true,
+                message: '服务断掉了哦~',
+                type: 'error',
+                duration: 0
+              })
+            }
+          })
       }
     }
   }

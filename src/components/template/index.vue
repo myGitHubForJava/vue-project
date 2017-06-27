@@ -1,99 +1,118 @@
 <template>
-  <mn-scroller>
-    <mn-section>
-      <mn-letter>
-        <h1>模板列表</h1>
-      </mn-letter>
-    </mn-section>
+  <mn-dashboard>
+    <mn-dashboard-brand slot="brand" class="brand"
+      @click.native="$router.push({name:'homepage'})">
+      <mn-icon :name="logo" :width="100"></mn-icon>
+    </mn-dashboard-brand>
 
-    <mn-section>
-      <mn-card>
-        <mn-card-item>
-          <mn-card-body>
-            <mn-columns>
-              <mn-column desktop="6">
-                <controller-bar class="has-two-margin-bottom">
-                  <label slot="prefix">名称:</label>
-                  <mn-input v-model="searchForm.name" placeholder="名称搜索"></mn-input>
-                </controller-bar>
-              </mn-column>
-              <mn-column desktop="6">
-                <controller-bar class="has-two-margin-bottom">
-                  <label slot="prefix">地址:</label>
-                  <mn-input v-model="searchForm.address" placeholder="地址搜索"></mn-input>
-                </controller-bar>
-              </mn-column>
-            </mn-columns>
-            <mn-columns>
-              <mn-column desktop="6">
-                <controller-bar class="has-two-margin-bottom">
-                  <label slot="prefix">创建人:</label>
-                  <mn-input v-model="searchForm.createBy" placeholder="搜索"></mn-input>
-                </controller-bar>
-              </mn-column>
-              <mn-column desktop="6">
-                <controller-bar class="has-two-margin-bottom">
-                  <label slot="prefix">创建人:</label>
-                  <div>
-                    <mn-datetime-picker :display="`${searchForm.startDate} 至 ${searchForm.endDate}`" @openPicker="onOpenRange"></mn-datetime-picker>
-                  </div>
-                </controller-bar>
-              </mn-column>
-            </mn-columns>
-          </mn-card-body>
-        </mn-card-item>
-        <mn-card-item>
-          <mn-card-body>
-            <mn-btn theme="primary" size="sm" @click="clickSearch" margin>搜索</mn-btn>
-            <mn-btn size="sm" @click="reset" theme="secondary-outline" margin >重置</mn-btn>
-            <mn-btn theme="secondary-outline" margin size="sm" @click="createtemplate">新增模版</mn-btn>
-          </mn-card-body>
-        </mn-card-item>
-      </mn-card>
-      <!-- 表格展示 -->
-      <mn-cell :contents="tableData" :hideSelections="true" v-if="tableData">
-        <template scope="scope">
-          <mn-card-item :item="scope.item">
-            <mn-card-body>
-              <mn-columns>
-                <mn-column desktop="2">
-                  <div>名称: {{ scope.item.Title }}</div>
-                </mn-column>
-                <mn-column desktop="2">
-                  <div>地址: {{ scope.item.address }}</div>
-                </mn-column>
-                <mn-column desktop="2">
-                  <div>创建人: {{ scope.item.CreatedBy }}</div>
-                </mn-column>
-                 <mn-column desktop="3">
-                  <div>创建时间: {{ scope.item.CreatedAt }}</div>
-                </mn-column>
-                 <mn-column desktop="3">
-                  <div>更新时间: {{ scope.item.UpdatedAt }}</div>
-                </mn-column>
-                <mn-column desktop="2">
-                  <div>
-                    <mn-btn theme="primary" size="sm" @click.native="editTemplate(scope.item)">编辑</mn-btn>
-                    <mn-btn theme="primary" size="sm" @click.native="viewTemplate(scope.item)">预览</mn-btn>
-                  </div>
-                </mn-column>
-              </mn-columns>
-            </mn-card-body>
-          </mn-card-item>
-        </template>
-      </mn-cell>
-      <mn-card v-else>
-        <mn-card-item>
-          <mn-card-body class="has-center-text">
-            <mn-loading-icon></mn-loading-icon>
-            正在加载中...
-          </mn-card-body>
-        </mn-card-item>
-      </mn-card>
-      <!-- 分页 -->
-      <mn-paginate v-model="currentPage" :total="total" @input="changePageNum"></mn-paginate>
-    </mn-section>
-  </mn-scroller>
+    <mn-side-bar slot="sideBar" :show.sync="showSidebar">
+      <mn-scroller name="dashboard-side">
+        <mn-section>
+          <mn-side-bar-menu :menu="menu"></mn-side-bar-menu>
+        </mn-section>
+      </mn-scroller>
+    </mn-side-bar>
+
+    <mn-dashboard-body>
+      <slot>
+        <mn-scroller>
+          <mn-section>
+            <mn-letter>
+              <h1>模板列表</h1>
+            </mn-letter>
+          </mn-section>
+
+          <mn-section>
+            <mn-card>
+              <mn-card-item>
+                <mn-card-body>
+                  <mn-columns>
+                    <mn-column desktop="6">
+                      <controller-bar class="has-two-margin-bottom">
+                        <label slot="prefix">名称:</label>
+                        <mn-input v-model="searchForm.name" placeholder="名称搜索"></mn-input>
+                      </controller-bar>
+                    </mn-column>
+                    <mn-column desktop="6">
+                      <controller-bar class="has-two-margin-bottom">
+                        <label slot="prefix">地址:</label>
+                        <mn-input v-model="searchForm.address" placeholder="地址搜索"></mn-input>
+                      </controller-bar>
+                    </mn-column>
+                  </mn-columns>
+                  <mn-columns>
+                    <mn-column desktop="6">
+                      <controller-bar class="has-two-margin-bottom">
+                        <label slot="prefix">创建人:</label>
+                        <mn-input v-model="searchForm.createBy" placeholder="搜索"></mn-input>
+                      </controller-bar>
+                    </mn-column>
+                    <mn-column desktop="6">
+                      <controller-bar class="has-two-margin-bottom">
+                        <label slot="prefix">创建人:</label>
+                        <div>
+                    <mn-datetime-picker :display="`${searchForm.startDate} 至 ${searchForm.endDate}`" @openPicker="      onOpenRange"></mn-datetime-picker>
+                        </div>
+                      </controller-bar>
+                    </mn-column>
+                  </mn-columns>
+                </mn-card-body>
+              </mn-card-item>
+              <mn-card-item>
+                <mn-card-body>
+                  <mn-btn theme="primary" size="sm" @click="clickSearch" margin>搜索</mn-btn>
+                  <mn-btn size="sm" @click="reset" theme="secondary-outline" margin >重置</mn-btn>
+                  <mn-btn theme="secondary-outline" margin size="sm" @click="createtemplate">新增模版</mn-btn>
+                </mn-card-body>
+              </mn-card-item>
+            </mn-card>
+            <!-- 表格展示 -->
+            <mn-cell :contents="tableData" :hideSelections="true" v-if="tableData">
+              <template scope="scope">
+                <mn-card-item :item="scope.item">
+                  <mn-card-body>
+                    <mn-columns>
+                      <mn-column desktop="2">
+                        <div>名称: {{ scope.item.Title }}</div>
+                      </mn-column>
+                      <mn-column desktop="2">
+                        <div>地址: {{ scope.item.address }}</div>
+                      </mn-column>
+                      <mn-column desktop="2">
+                        <div>创建人: {{ scope.item.CreatedBy }}</div>
+                      </mn-column>
+                      <mn-column desktop="3">
+                        <div>创建时间: {{ scope.item.CreatedAt }}</div>
+                      </mn-column>
+                      <mn-column desktop="3">
+                        <div>更新时间: {{ scope.item.UpdatedAt }}</div>
+                      </mn-column>
+                      <mn-column desktop="2">
+                        <div>
+                          <mn-btn theme="primary" size="sm" @click.native="editTemplate(scope.item)">编辑</mn-btn>
+                          <mn-btn theme="primary" size="sm" @click.native="viewTemplate(scope.item)">预览</mn-btn>
+                        </div>
+                      </mn-column>
+                    </mn-columns>
+                  </mn-card-body>
+                </mn-card-item>
+              </template>
+            </mn-cell>
+            <mn-card v-else>
+              <mn-card-item>
+                <mn-card-body class="has-center-text">
+                  <mn-loading-icon></mn-loading-icon>
+                  正在加载中...
+                </mn-card-body>
+              </mn-card-item>
+            </mn-card>
+            <!-- 分页 -->
+            <mn-paginate v-model="currentPage" :total="total" @input="changePageNum"></mn-paginate>
+          </mn-section>
+        </mn-scroller>
+      </slot>
+    </mn-dashboard-body>
+  </mn-dashboard>
 </template>
 
 <script>
@@ -105,6 +124,9 @@
   import datetime from 'vue-human/suites/datetime'
   import DatetimeRange from 'vue-human/utils/DatetimeRange'
   import cell from 'vue-human/suites/cell'
+  import logo from './logo'
+  import dashboard from 'vue-human/suites/dashboard'
+  import sideBar from 'vue-human/suites/sideBar'
 
   export default {
     data () {
@@ -120,7 +142,20 @@
         currentPage: 1,
         loading: false,
         tableData: undefined,
-        total: 10
+        total: 10,
+        logo,
+        menu: [
+          {
+            name: '模版',
+            children: [
+              {
+                name: '模版列表',
+                push: {name: 'templates'}
+              }
+            ]
+          }
+        ],
+        showSidebar: false
       }
     },
     components: {
@@ -130,7 +165,9 @@
       ...paginateSuits.map(),
       ...datetime.map(),
       ...cell.map(),
-      controllerBar
+      controllerBar,
+      ...dashboard.map(),
+      ...sideBar.map()
     },
     methods: {
       onOpenRange () {
@@ -183,13 +220,14 @@
         this.search()
       },
       editTemplate (data) {
-        console.log(data)
+        this.$router.push({ path: 'edit', query: {id: data.ID} })
       },
       viewTemplate (data) {
-
+        console.log(data.ID)
+        this.$router.push({ path: 'view', query: {id: data.ID} })
       },
       createtemplate () {
-        this.$router.push({path: '/createTemplate'})
+        this.$router.push({path: '/create'})
       }
     },
     mounted () {
@@ -199,5 +237,8 @@
 </script>
 
 <style lang="scss">
-
+.mn-scroller-contents {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 </style>
