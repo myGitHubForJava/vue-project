@@ -22,3 +22,10 @@ export function editTemplate (data = {}, id = {}) {
     data: data
   })
 }
+
+export function deleteTemplate (id = {}) {
+  return axios({
+    method: 'DELETE',
+    url: `/templates/${id}`
+  })
+}

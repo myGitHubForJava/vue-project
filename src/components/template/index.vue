@@ -237,8 +237,9 @@
 </script>
 
 <style lang="scss">
-.mn-scroller-contents {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
+
+  .mn-scroller-contents {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 </style>

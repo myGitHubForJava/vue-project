@@ -9,10 +9,10 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'homepage',
-      component: resolve => { require(['../components/home'], resolve) }
+      component: resolve => { require(['../components/template'], resolve) }
     },
     {
-      path: '/sign',
+      path: '/',
       component: resolve => { require(['../components/sign'], resolve) },
       children: sign
     },
@@ -25,11 +25,6 @@ const router = new VueRouter({
       path: '/create',
       name: 'create',
       component: resolve => { require(['../components/template/create'], resolve) }
-    },
-    {
-      path: '/view',
-      name: 'view',
-      component: resolve => { require(['../components/template/view'], resolve) }
     },
     {
       path: '/edit',

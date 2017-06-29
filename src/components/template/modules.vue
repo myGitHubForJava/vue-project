@@ -116,7 +116,7 @@
             </mn-label>
           </mn-card-prefix>
           <mn-card-body>
-            <div class="inputs">
+            <div class="inputs" v-model="mar">
               <input v-model="margin[0]" placeholder="上" />
               <input v-model="margin[1]"  placeholder="右"  />
               <input v-model="margin[2]"  placeholder="下"  />
@@ -132,7 +132,7 @@
             </mn-label>
           </mn-card-prefix>
           <mn-card-body>
-            <div class="inputs">
+            <div class="inputs" v-model="par">
               <input v-model="padding[0]" placeholder="上" />
               <input v-model="padding[1]"  placeholder="右"  />
               <input v-model="padding[2]"  placeholder="下"  />
@@ -253,7 +253,7 @@
           <mn-card-item v-if="data.type==='banner'">
             <mn-card-prefix>
               <mn-label>
-              url:
+              链接:
               </mn-label>
             </mn-card-prefix>
             <mn-card-body>
@@ -279,7 +279,7 @@
               </mn-label>
             </mn-card-prefix>
             <mn-card-body>
-              <mn-input v-model="form.target"></mn-input>
+              <mn-select :options="selectOptions" v-model="form.target" v-if="selectOptions.length>0"></mn-select>
             </mn-card-body>
           </mn-card-item>
           <!-- tab名-->
@@ -325,7 +325,7 @@
         <mn-card-item v-if="data.type!=='image'&&data.type!=='button'">
           <mn-card-body>
             <ul class="items-list" v-if="data.type==='banner'">
-              <li v-for="(item, index) of data.items" @click="editArr(index)" v-if="item.src!==''||item.url!==''" :key="index">
+              <li v-for="(item, index) of data.items" v-if="item.src!==''||item.url!==''" :key="index">
               <div>[ 图片：{{ item.src.length>8?item.src.substring(0,8)+'...':item.src }}, 链接：{{ item.url.length>8?item.url.substring(0,8)+'...':item.url }} ]</div>
               <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
               </li>
@@ -371,6 +371,7 @@ import core from 'vue-human/suites/core'
 import input from 'vue-human/suites/input'
 import radio from 'vue-human/suites/radio'
 import FileUpload from 'vue-upload-component'
+import select from 'vue-human/suites/select'
 
 export default {
   data () {
@@ -402,24 +403,33 @@ export default {
           value: false
         }
       ],
-      margin: [],
-      padding: []
+      padding: [],
+      margin: []
     }
   },
   components: {
     ...core.map(),
     ...input.map(),
     ...radio.map(),
+    ...select.map(),
     FileUpload
   },
   props: {
     data: {
       type: Object,
-      required: true
+      required: true,
+      default: () => {}
     },
     form: {
       type: Object,
       required: true
+    },
+    selectOptions: {
+      type: Array,
+      default: () => [{
+        label: '暂无，请先添加商品',
+        value: null
+      }]
     }
   },
   methods: {
@@ -430,6 +440,7 @@ export default {
       this.$emit('save')
     },
     addMore () {
+      console.log(this.form)
       this.$emit('addMore', this.form)
     },
     addAbove () {
@@ -443,6 +454,20 @@ export default {
       this[type].forEach(key => {
         this.data[type] += key.trim() + ' '
       })
+    }
+  },
+  computed: {
+    mar () {
+      if (this.data.margin) {
+        this.margin = this.data.margin.trim().split(' ')
+        return ''
+      }
+    },
+    par () {
+      if (this.data.padding) {
+        this.padding = this.data.padding.trim().split(' ')
+        return ''
+      }
     }
   }
 }

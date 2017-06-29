@@ -9,7 +9,7 @@
     <mn-section>
       <mn-columns>
         <mn-column desktop="6">
-          <div :class="['view-box']">
+          <div :class="['view-box']" v-if="config">
               <div :class="['view-box-wrapper']">
                 <div :class="['view-box-title']">
                   <mn-icon :name="icons.arrowLeft" :width="50" :height="50"></mn-icon>
@@ -51,13 +51,16 @@
                       <!-- products -->
                       <products :data="item" v-if="item.type==='products'" @edit="editModule(item)"></products>
                       <!-- button -->
-                      <div :class="['to-top']" id="toTop" v-if="item.type==='button'&&item.cartIcon" style="display:block">
+                      <div :class="['to-top']" id="toTop" v-if="item.type==='button'&&item.cartIcon" style="display:block" @edit="editModule(item)">
                         <mn-icon :name="icons.arrowUp" :width="30" :height="30"></mn-icon>
                       </div>
                     </div>
                   </draggable>
                 </div>
               </div>
+          </div>
+          <div v-else>
+            <mn-loading-icon></mn-loading-icon>loading...
           </div>
         </mn-column>
         <mn-column desktop="6">
@@ -81,6 +84,7 @@
                     :data="formData"
                     :isShow="!listShow"
                     :form="modulesForm"
+                    :selectOptions="selectOptions"
                     @cancel="cancel"
                     @save="save"
                     @addMore="addMore"
@@ -116,7 +120,7 @@
   import products from './products'
   import Confirm from 'vue-human/utils/Confirm'
 
-  import {editTemplate, showTemplate} from '../../axios/template'
+  import {editTemplate, showTemplate, deleteTemplate} from '../../axios/template'
 
   export default {
     data () {
@@ -297,12 +301,28 @@
         } else {
           return ''
         }
+      },
+      selectOptions () {
+        let arr = [
+          {
+            label: '请选择',
+            value: null
+          }
+        ]
+        this.config.data.forEach(key => {
+          if (key.type === 'products') {
+            let obj = Object.assign({}, {label: '', value: ''})
+            obj.value = key.id
+            obj.label = key.id
+            arr.push(obj)
+          }
+        })
+        return arr
       }
     },
     mounted () {
       return showTemplate(this.$route.query.id).then(response => {
         this.config = JSON.parse(response.data.JsonData.data)
-        console.log(this.config)
       }).catch(error => {
         console.log(error)
       })
@@ -438,18 +458,30 @@
           }
         }
         return editTemplate(data, this.$route.query.id).then(() => {
-          this.$router.push({ name: 'template' })
           Message.create({type: 'success', message: '保存成功'}).show()
+          setTimeout(() => {
+            this.$router.push({path: '/template'})
+          }, 500)
         }).catch(error => {
           Message.create({type: 'error', message: error.response.data.Error}).show()
           console.log(error.response.data.Error)
         })
       },
       remove () {
-
+        Confirm.create({description: '是否删除'}).show()
+          .$on('confirm', () => {
+            return deleteTemplate(this.$route.query.id).then(() => {
+              Message.create({type: 'success', message: '删除成功'}).show()
+              setTimeout(() => {
+                this.$router.push({path: '/template'})
+              }, 500)
+            }).catch(error => {
+              console.log(error)
+            })
+          })
       },
       view () {
-        this.$router.push({path: '/view', params: {config: this.config}})
+        Confirm.create({description: '请先保存'}).show()
       },
       addAbove () {
         Confirm.create({description: '是否保存并添加'}).show()
@@ -470,6 +502,7 @@
 </script>
 
 <style lang="scss">
+
   .view-box {
     width: 320px;
     height: 568px;
@@ -665,6 +698,8 @@
         bottom: 5%;
         right: 5%;
         text-align: center;
+        z-index: 999;
+
         .mn-icon {
           fill: rgba(255,255,255,0.8);
           margin-top: 8px;

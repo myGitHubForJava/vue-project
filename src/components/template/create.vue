@@ -51,7 +51,7 @@
                       <!-- products -->
                       <products :data="item" v-if="item.type==='products'" @edit="editModule(item)"></products>
                       <!-- button -->
-                      <div :class="['to-top']" id="toTop" v-if="item.type==='button'&&item.cartIcon" style="display:block">
+                      <div :class="['to-top']" id="toTop" v-if="item.type==='button'&&item.cartIcon" style="display:block" @edit="editModule(item)">
                         <mn-icon :name="icons.arrowUp" :width="30" :height="30"></mn-icon>
                       </div>
                     </div>
@@ -81,6 +81,7 @@
                     :data="formData"
                     :isShow="!listShow"
                     :form="modulesForm"
+                    :selectOptions="selectOptions"
                     @cancel="cancel"
                     @save="save"
                     @addMore="addMore"
@@ -175,8 +176,8 @@
                 }
               ],
               background: {
-                color: '#81CDFF',
-                image: '123.png',
+                color: '#fff',
+                image: '',
                 size: 'cover',
                 position: 'center',
                 repeat: 'no-repeat'
@@ -297,6 +298,23 @@
         } else {
           return ''
         }
+      },
+      selectOptions () {
+        let arr = [
+          {
+            label: '请选择',
+            value: null
+          }
+        ]
+        this.config.data.forEach(key => {
+          if (key.type === 'products') {
+            let obj = Object.assign({}, {label: '', value: ''})
+            obj.value = key.id
+            obj.label = key.id
+            arr.push(obj)
+          }
+        })
+        return arr
       }
     },
     methods: {
@@ -463,6 +481,7 @@
 </script>
 
 <style lang="scss">
+
   .view-box {
     width: 320px;
     height: 568px;
@@ -654,7 +673,7 @@
         height: 40px;
         border-radius: 50%;
         background-color: rgba(0,0,0,0.5);
-        position: absolute;
+        position: fixed;
         bottom: 5%;
         right: 5%;
         text-align: center;

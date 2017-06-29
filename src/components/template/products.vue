@@ -1,6 +1,34 @@
 <template>
 <div class="normal-items pointer" @click="edit(data)" :style="calcStyle(data)">
-  <ul class="item-ul" style="margin: 0;padding: 0;">
+  <ul class="item-ul" style="margin: 0;padding: 0;" v-if="skusInfo">
+    <li :class="['item-li', 'col-' + 12/data.col]" v-for="item of data.items">
+      <a :href="calcHref(item)" style="display: block;">
+        <div class="item-img">
+          <div class="item-tag">
+            <span class="item-tag-text">{{ item.tip }}</span>
+          </div>
+          <img :src="skusInfo[item.sku].newImageURL">
+        </div>
+        <div class="item-info">
+          <div class="item-info-title">
+          {{ skusInfo[item.sku].Name }}
+          </div>
+          <div class="item-info-price">
+            <div class="old-price">
+              {{ skusInfo[item.sku].price2 }}
+            </div>
+            <div class="new-price">
+              <span class="new-price-big">{{ skusInfo[item.sku].price.split('.')[0] }}</span>.{{ skusInfo[item.sku].price.split('.')[1] }}
+            </div>
+          </div>
+          <div class="cart">
+            <mn-icon :name="icons.cart" :scale="2"></mn-icon>
+          </div>
+        </div>
+      </a>
+    </li>
+  </ul>
+  <ul class="item-ul" style="margin: 0;padding: 0;" v-else>
     <li :class="['item-li', 'col-' + 12/data.col]" v-for="n in 4">
       <div class="item-img">
         <div class="item-tag">
@@ -42,6 +70,10 @@ export default {
     data: {
       type: Object,
       required: true
+    },
+    skusInfo: {
+      type: Object,
+      default: () => {}
     }
   },
   methods: {
@@ -64,12 +96,20 @@ export default {
       if (padding.length > 3) {
         str += `padding: ${padding[0]}px ${padding[1]}px ${padding[2]}px ${padding[3]}px;`
       }
-      str += `background-color: ${data.background.color};`
-      str += `background-size: ${data.background.size};`
-      str += `background-position: ${data.background.position};`
-      str += `background-repeat: ${data.background.repeat};`
-      str += `background-image: url('${data.background.color}');`
+      if (this.data.background.image) {
+        str += `background-size: ${this.data.background.size};`
+        str += `background-position: ${this.data.background.position};`
+        str += `background-repeat: ${this.data.background.repeat};`
+        str += `background-image: url('${this.data.background.image}');`
+      }
       return str
+    },
+    calcHref (item) {
+      if (this.skusInfo) {
+        return 'http://m.34580.com/good.info/' + this.skusInfo[item.sku].href.split('/')[2]
+      } else {
+        return undefined
+      }
     }
   }
 }

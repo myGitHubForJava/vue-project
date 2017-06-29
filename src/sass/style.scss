@@ -15,10 +15,10 @@ html,body {
 }
 //navbar
 .nav-menu {
+  position: relative;
   width: 100%;
   background-color: #fff;
-  position: fixed;
-  z-index: 9999;
+  z-index: 99;
   box-shadow: 1px 0 1px 1px rgab(0,0,0,0.3);
   border-bottom: 1px solid #eeeeee;
 
@@ -32,7 +32,6 @@ html,body {
     justify-content: flex-start;
     position: relative;
     border-bottom: 1px solid rgba(0,0,0,0.1);
-    box-shadow: -2px -1px 1px 1px rgba(0,0,0,0.1);
 
     .nav-li {
       flex: 1 0 auto;
@@ -40,20 +39,10 @@ html,body {
     }
   }
   //4个以上
-  .nav-ul-more {
-    display: flex;
-    flex-direction: row;
+  .isMore {
     flex-wrap: nowrap;
-    list-style: none;
-    height: 80px;
-    justify-content: flex-start;
-    position: relative;
     width: calc(100% - 80px);
-    width: -webkit-calc(100% - 80px);
-    width: -moz-calc(100% - 80px);
     overflow-x: auto;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    box-shadow: -2px -1px 1px 1px rgba(0,0,0,0.1);
 
     .nav-li-more {
       text-align: center;
@@ -89,6 +78,7 @@ html,body {
     border-left: 1px solid #eeeeee;
     box-shadow: -1px -1px 2px 0px rgba(0,0,0,0.1);
     border-bottom: 1px solid rgba(0,0,0,0.1);
+    z-index: 999;
 
     .mn-icon {
       fill: #ff718e;
@@ -156,6 +146,7 @@ html,body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    cursor: pointer;
 
     &-img {
       width: 48%;
@@ -171,10 +162,13 @@ html,body {
     &-info {
       width: 52%;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
       .item-info-title h2{
         color: #333333;
-        font-size: 0.5rem;
+        font-size: 0.4rem;
         font-weight: 500;
       }
 
@@ -192,8 +186,6 @@ html,body {
       }
 
       .item-info-price {
-        position: absolute;
-        bottom: 0;
 
         .old-price {
           color: #aaaaaa;
@@ -333,6 +325,7 @@ html,body {
 }
 img {
   display: block;
+  width: 100%;
 }
 a {
   text-decoration: none;
@@ -347,6 +340,7 @@ a {
   right: 5%;
   display: none;
   text-align: center;
+  z-index: 999;
 
   .mn-icon {
     fill: rgba(255,255,255,0.8);
@@ -364,4 +358,10 @@ a {
 .mn-carousel-indicator.is-active {
   width: 0.4rem !important;
   height: 0.4rem !important;
+}
+
+.loading-text {
+  text-align: center;
+  line-height: 100vh;
+  font-size: 30px;
 }

@@ -119,3 +119,9 @@
     }
   }
 </script>
+
+<style lang="scss">
+html {
+  font-size: 16px !important;
+}
+</style>

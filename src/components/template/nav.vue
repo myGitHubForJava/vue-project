@@ -1,5 +1,5 @@
 <template>
-<div :class="['nav-menu']">
+<div :class="['nav-menu']" id="tab">
   <ul :class="['nav-ul']" v-if="navList.length<=4">
     <li v-for="item of navList" :class="['nav-li']">
       <div :class="['nav-item']" @click="navClick($event, item.target)" name="nav">
@@ -14,10 +14,10 @@
       </div>
     </li>
   </ul>
-  <ul v-else :class="['nav-ul', 'isMore']">
+  <ul v-if="navShow&&navList.length>4" :class="['nav-ul', 'isMore']">
     <div :class="['nav-text']">切换楼层</div>
   </ul>
-  <div :class="['drop-down']" @click="openNav">
+  <div :class="['drop-down']" @click="openNav" v-if="navList.length>4">
     <mn-icon :name="icons.arrowDown" :width="80" :height="80" v-if="arrowDown"></mn-icon>
     <mn-icon :name="icons.arrowUp" :width="80" :height="80" v-else></mn-icon>
   </div>
