@@ -130,7 +130,6 @@ html,body {
 }
 //单个商品
 .hot-items {
-  margin: 0.5rem 0;
   padding: 0;
   background: {
     color: #fff;
@@ -142,7 +141,6 @@ html,body {
 
   .hot-item {
     margin: 0;
-    padding: 30px 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

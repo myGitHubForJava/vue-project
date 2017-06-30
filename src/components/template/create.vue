@@ -13,13 +13,13 @@
               <div :class="['view-box-wrapper']">
                 <div :class="['view-box-title']">
                   <mn-icon :name="icons.arrowLeft" :width="50" :height="50"></mn-icon>
-                  <h1 v-text="formData.title"></h1>
+                  <h1></h1>
                 </div>
                 <div :class="['view-box-content']" :style="calcBkground">
                   <draggable v-model="config.data" @start="drag=true" @end="drag=false">
                     <div :class="['view-items']" v-for="item of config.data">
                       <!-- tab -->
-                      <div :class="['view-menu']" v-if="item.type==='tab'" :style="" @click="editModule(item)">
+                      <div :class="['view-menu']" v-if="item.type==='tab'" @click="editModule(item)">
                         <div :class="['view-menu-content', {'isMore': item.items.length>4}]">
                           <ul>
                             <li v-for="(name, index) of item.items">
@@ -51,7 +51,7 @@
                       <!-- products -->
                       <products :data="item" v-if="item.type==='products'" @edit="editModule(item)"></products>
                       <!-- button -->
-                      <div :class="['to-top']" id="toTop" v-if="item.type==='button'&&item.cartIcon" style="display:block" @edit="editModule(item)">
+                      <div :class="['to-top']" id="toTop" v-if="item.type==='button'&&item.cartIcon" style="display:block" @click="editModule(item)">
                         <mn-icon :name="icons.arrowUp" :width="30" :height="30"></mn-icon>
                       </div>
                     </div>
@@ -136,8 +136,8 @@
               type: 'image',
               src: '',
               url: '',
-              margin: '0 0 0 0',
-              padding: '0 0 0 0'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -151,8 +151,8 @@
                   url: ''
                 }
               ],
-              margin: '0 0 0 0',
-              padding: '0 0 0 0'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -182,8 +182,8 @@
                 position: 'center',
                 repeat: 'no-repeat'
               },
-              margin: '0 0 0 0',
-              padding: '1 1 1 1'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -206,8 +206,8 @@
                   intro: ''
                 }
               ],
-              margin: ' 0 0 0 0',
-              padding: '0 0 0 0'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -232,11 +232,11 @@
               title: '',
               templateName: '',
               background: {
-                color: '#fff',
-                image: 'xxx.png',
-                size: 'cover',
-                position: 'center',
-                repeat: 'no-repeat'
+                color: '',
+                image: '',
+                size: '',
+                position: '',
+                repeat: ''
               }
             }
           }
@@ -324,14 +324,31 @@
         this.isSaved = false
         this.title = this.lists[index].name
         this.formData = JSON.parse(JSON.stringify(this.lists[index].data))
-        if (this.indexForAbove !== null) {
-          this.config.data.splice(this.indexForAbove, 0, this.formData)
-        } else {
-          this.config.data.push(this.formData)
+        switch (this.formData.type) {
+          case 'tab' : {
+            this.config.data.splice(0, 0, this.formData)
+            break
+          }
+          case 'other':
+          case 'button': {
+            if (!this.isExist()) {
+              this.config.data.push(this.formData)
+            }
+            break
+          }
+          default: {
+            if (this.indexForAbove !== null) {
+              this.config.data.splice(this.indexForAbove, 0, this.formData)
+            } else {
+              this.config.data.push(this.formData)
+            }
+            break
+          }
         }
         this.indexForAbove = null
       },
       editModule (data) {
+        console.log(data)
         if (this.isSaved === false) {
           Message.create({type: 'warning', message: '数据未保存！请先保存'}).show()
         } else {
@@ -440,7 +457,6 @@
             this.templateName = key.templateName
           }
         })
-        console.log(this.skus)
         let data = {
           'Title': this.templateName,
           'JsonData': {
@@ -475,6 +491,16 @@
               this.isSaved = true
             }
           })
+      },
+      isExist () {
+        let str = false
+        this.config.data.forEach(key => {
+          if (this.formData.type === key.type) {
+            this.formData = key
+            str = true
+          }
+        })
+        return str
       }
     }
   }
@@ -491,8 +517,12 @@
     &-wrapper {
       width: 100%;
       height: 100%;
-      overflow-y: auto;
       position: relative;
+    }
+
+    &-content {
+      height: calc(100% - 50px);
+      overflow-y: auto;
     }
 
     &-title {
@@ -673,7 +703,7 @@
         height: 40px;
         border-radius: 50%;
         background-color: rgba(0,0,0,0.5);
-        position: fixed;
+        position: absolute;
         bottom: 5%;
         right: 5%;
         text-align: center;

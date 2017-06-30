@@ -96,6 +96,7 @@ export default {
       if (padding.length > 3) {
         str += `padding: ${padding[0]}px ${padding[1]}px ${padding[2]}px ${padding[3]}px;`
       }
+      str += `background-color: ${this.data.background.color};`
       if (this.data.background.image) {
         str += `background-size: ${this.data.background.size};`
         str += `background-position: ${this.data.background.position};`

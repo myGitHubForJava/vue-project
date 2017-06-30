@@ -1,6 +1,6 @@
 <template>
-  <div class="hot-items pointer" :style="calcStyle" @click="edit(data)">
-      <div style="padding: 0;margin: 0;">
+  <div class="hot-items pointer" @click="edit(data)">
+      <div :style="calcStyle">
         <a :class="['hot-item', {'hot-item-right' : data.right===true}]" :href="calcHref">
           <div class="hot-item-img">
             <div class="item-tag">

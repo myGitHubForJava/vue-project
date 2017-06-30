@@ -19,7 +19,7 @@
                   <draggable v-model="config.data" @start="drag=true" @end="drag=false">
                     <div :class="['view-items']" v-for="item of config.data">
                       <!-- tab -->
-                      <div :class="['view-menu']" v-if="item.type==='tab'" :style="" @click="editModule(item)">
+                      <div :class="['view-menu']" v-if="item.type==='tab'" @click="editModule(item)">
                         <div :class="['view-menu-content', {'isMore': item.items.length>4}]">
                           <ul>
                             <li v-for="(name, index) of item.items">

@@ -188,7 +188,7 @@
           <mn-card-item>
             <mn-card-prefix>
               <mn-label>
-              bc-color:
+              背景色:
               </mn-label>
             </mn-card-prefix>
             <mn-card-body>
@@ -198,7 +198,7 @@
           <mn-card-item>
             <mn-card-prefix>
               <mn-label>
-              bc-image:
+              背景图片:
               </mn-label>
             </mn-card-prefix>
             <mn-card-body>
@@ -208,17 +208,17 @@
           <mn-card-item>
             <mn-card-prefix>
               <mn-label>
-              bc-size:
+              背景图大小:
               </mn-label>
             </mn-card-prefix>
             <mn-card-body>
-              <mn-input v-model="data.background.size"></mn-input>
+              <mn-input v-model="data.background.size" placeholder="cover | contain"></mn-input>
             </mn-card-body>
           </mn-card-item>
           <mn-card-item>
             <mn-card-prefix>
               <mn-label>
-              bc-position:
+              背景图位置:
               </mn-label>
             </mn-card-prefix>
             <mn-card-body>
@@ -228,11 +228,11 @@
           <mn-card-item>
             <mn-card-prefix>
               <mn-label>
-              bc-repeat:
+              重复背景:
               </mn-label>
             </mn-card-prefix>
             <mn-card-body>
-              <mn-input v-model="data.background.repeat"></mn-input>
+              <mn-select :options="bkRepeatOptions" v-model="data.background.repeat"></mn-select>
             </mn-card-body>
           </mn-card-item>
         </div>
@@ -403,6 +403,28 @@ export default {
           value: false
         }
       ],
+      bkRepeatOptions: [
+        {
+          label: '请选择',
+          value: undefined
+        },
+        {
+          label: 'repeat',
+          value: 'repeat'
+        },
+        {
+          label: 'no-repeat',
+          value: 'no-repeat'
+        },
+        {
+          label: 'repeat-x',
+          value: 'repeat-x'
+        },
+        {
+          label: 'repeat-y',
+          value: 'repeat-y'
+        }
+      ],
       padding: [],
       margin: []
     }
@@ -506,7 +528,7 @@ export default {
       padding-left: 3px;
 
       &::-webkit-input-placeholder {
-        color: #aaa;
+        color: #e3e4e5;
         font-size: 12px;
         text-align: center;
       }

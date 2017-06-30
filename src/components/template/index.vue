@@ -150,7 +150,7 @@
             children: [
               {
                 name: '模版列表',
-                push: {name: 'templates'}
+                push: {name: 'template'}
               }
             ]
           }
@@ -208,7 +208,6 @@
         this.$store.dispatch('template.listTemplates', params)
         .then(response => {
           this.tableData = response.data
-          console.log(this.tableData)
           this.loading = false
         }).catch(error => {
           this.loading = false
@@ -223,8 +222,7 @@
         this.$router.push({ path: 'edit', query: {id: data.ID} })
       },
       viewTemplate (data) {
-        console.log(data.ID)
-        this.$router.push({ path: 'view', query: {id: data.ID} })
+        this.$router.push({ path: 'view', query: {id: data.ID, city: 'sz'} })
       },
       createtemplate () {
         this.$router.push({path: '/create'})
