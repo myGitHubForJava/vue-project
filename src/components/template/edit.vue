@@ -85,6 +85,8 @@
                     :isShow="!listShow"
                     :form="modulesForm"
                     :selectOptions="selectOptions"
+                    @editItem="editItem"
+                    @update="update"
                     @cancel="cancel"
                     @save="save"
                     @addMore="addMore"
@@ -139,8 +141,8 @@
               type: 'image',
               src: '',
               url: '',
-              margin: '0 0 0 0',
-              padding: '0 0 0 0'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -154,8 +156,8 @@
                   url: ''
                 }
               ],
-              margin: '0 0 0 0',
-              padding: '0 0 0 0'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -179,14 +181,14 @@
                 }
               ],
               background: {
-                color: '#81CDFF',
-                image: '123.png',
+                color: '#fff',
+                image: '',
                 size: 'cover',
                 position: 'center',
                 repeat: 'no-repeat'
               },
-              margin: '0 0 0 0',
-              padding: '1 1 1 1'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -209,8 +211,8 @@
                   intro: ''
                 }
               ],
-              margin: ' 0 0 0 0',
-              padding: '0 0 0 0'
+              margin: '',
+              padding: ''
             }
           },
           {
@@ -235,11 +237,11 @@
               title: '',
               templateName: '',
               background: {
-                color: '#fff',
-                image: 'xxx.png',
-                size: 'cover',
-                position: 'center',
-                repeat: 'no-repeat'
+                color: '',
+                image: '',
+                size: '',
+                position: '',
+                repeat: ''
               }
             }
           }
@@ -334,10 +336,26 @@
         this.isSaved = false
         this.title = this.lists[index].name
         this.formData = JSON.parse(JSON.stringify(this.lists[index].data))
-        if (this.indexForAbove !== null) {
-          this.config.data.splice(this.indexForAbove, 0, this.formData)
-        } else {
-          this.config.data.push(this.formData)
+        switch (this.formData.type) {
+          case 'tab' : {
+            this.config.data.splice(0, 0, this.formData)
+            break
+          }
+          case 'other':
+          case 'button': {
+            if (!this.isExist()) {
+              this.config.data.push(this.formData)
+            }
+            break
+          }
+          default: {
+            if (this.indexForAbove !== null) {
+              this.config.data.splice(this.indexForAbove, 0, this.formData)
+            } else {
+              this.config.data.push(this.formData)
+            }
+            break
+          }
         }
         this.indexForAbove = null
       },
@@ -419,20 +437,14 @@
         Object.keys(obj).forEach(key => {
           obj[key] = val[key]
         })
-        let isNull = false
         if (this.formData.items.length === 0) {
-          isNull = true
+          if (obj.text || obj.src || obj.intro || obj.sku) {
+            this.formData.items.splice(0, 1, obj)
+          }
         } else {
-          Object.keys(this.formData.items[0]).forEach(key => {
-            if (this.formData.items[0][key] === '') {
-              isNull = true
-            }
-          })
-        }
-        if (isNull) {
-          this.formData.items.splice(0, 1, obj)
-        } else {
-          this.formData.items.push(obj)
+          if (obj.text || obj.src || obj.intro || obj.sku) {
+            this.formData.items.push(obj)
+          }
         }
       },
       removeArr (index) {
@@ -448,6 +460,9 @@
             })
           } else if (key.type === 'other') {
             this.templateName = key.templateName
+            this.moveToLast(key)
+          } else if (key.type === 'button') {
+            this.moveToLast(key)
           }
         })
         let data = {
@@ -496,6 +511,43 @@
               this.isSaved = true
             }
           })
+      },
+      isExist () {
+        let str = false
+        this.config.data.forEach(key => {
+          if (this.formData.type === key.type) {
+            this.formData = key
+            str = true
+          }
+        })
+        return str
+      },
+      moveToLast (data) {
+        let index = this.config.data.indexOf(data)
+        if (index !== -1) {
+          this.config.data.splice(index, 1)
+          this.config.data.push(data)
+        }
+      },
+      editItem (index) {
+        Object.keys(this.formData.items[index]).forEach(key => {
+          this.modulesForm[key] = this.formData.items[index][key]
+          console.log(this.modulesForm)
+        })
+      },
+      update (index) {
+        let obj = Object.assign({}, this.lists[this.isActive].data.items[0])
+        let val = Object.assign({}, this.modulesForm)
+        Object.keys(this.modulesForm).forEach(key => {
+          this.modulesForm[key] = ''
+        })
+        Object.keys(obj).forEach(key => {
+          obj[key] = val[key]
+        })
+        if (obj.text || obj.src || obj.intro || obj.sku) {
+          this.formData.items.splice(index, 1, obj)
+        }
+        console.log(this.formData.items)
       }
     }
   }
@@ -512,8 +564,12 @@
     &-wrapper {
       width: 100%;
       height: 100%;
-      overflow-y: auto;
       position: relative;
+    }
+
+    &-content {
+      height: calc(100% - 50px);
+      overflow-y: auto;
     }
 
     &-title {

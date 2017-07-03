@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import sign from './sign'
+import store from '../store'
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,19 @@ const router = new VueRouter({
       component: resolve => { require(['../components/template/edit'], resolve) }
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.path !== '/in') {
+    let token = store.state.user.token.token
+    if (!token) {
+      next('/in')
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -82,6 +82,8 @@
                     :isShow="!listShow"
                     :form="modulesForm"
                     :selectOptions="selectOptions"
+                    @editItem="editItem"
+                    @update="update"
                     @cancel="cancel"
                     @save="save"
                     @addMore="addMore"
@@ -348,7 +350,6 @@
         this.indexForAbove = null
       },
       editModule (data) {
-        console.log(data)
         if (this.isSaved === false) {
           Message.create({type: 'warning', message: '数据未保存！请先保存'}).show()
         } else {
@@ -426,20 +427,14 @@
         Object.keys(obj).forEach(key => {
           obj[key] = val[key]
         })
-        let isNull = false
         if (this.formData.items.length === 0) {
-          isNull = true
+          if (obj.text || obj.src || obj.intro || obj.sku) {
+            this.formData.items.splice(0, 1, obj)
+          }
         } else {
-          Object.keys(this.formData.items[0]).forEach(key => {
-            if (this.formData.items[0][key] === '') {
-              isNull = true
-            }
-          })
-        }
-        if (isNull) {
-          this.formData.items.splice(0, 1, obj)
-        } else {
-          this.formData.items.push(obj)
+          if (obj.text || obj.src || obj.intro || obj.sku) {
+            this.formData.items.push(obj)
+          }
         }
       },
       removeArr (index) {
@@ -455,6 +450,9 @@
             })
           } else if (key.type === 'other') {
             this.templateName = key.templateName
+            this.moveToLast(key)
+          } else if (key.type === 'button') {
+            this.moveToLast(key)
           }
         })
         let data = {
@@ -501,6 +499,33 @@
           }
         })
         return str
+      },
+      moveToLast (data) {
+        let index = this.config.data.indexOf(data)
+        if (index !== -1) {
+          this.config.data.splice(index, 1)
+          this.config.data.push(data)
+        }
+      },
+      editItem (index) {
+        Object.keys(this.formData.items[index]).forEach(key => {
+          this.modulesForm[key] = this.formData.items[index][key]
+          console.log(this.modulesForm)
+        })
+      },
+      update (index) {
+        let obj = Object.assign({}, this.lists[this.isActive].data.items[0])
+        let val = Object.assign({}, this.modulesForm)
+        Object.keys(this.modulesForm).forEach(key => {
+          this.modulesForm[key] = ''
+        })
+        Object.keys(obj).forEach(key => {
+          obj[key] = val[key]
+        })
+        if (obj.text || obj.src || obj.intro || obj.sku) {
+          this.formData.items.splice(index, 1, obj)
+        }
+        console.log(this.formData.items)
       }
     }
   }

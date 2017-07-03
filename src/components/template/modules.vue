@@ -249,17 +249,6 @@
               <mn-input v-model="form.intro" @keyup.enter="addMore()"></mn-input>
             </mn-card-body>
           </mn-card-item>
-          <!-- url-->
-          <mn-card-item v-if="data.type==='banner'">
-            <mn-card-prefix>
-              <mn-label>
-              链接:
-              </mn-label>
-            </mn-card-prefix>
-            <mn-card-body>
-              <mn-input v-model="form.url"></mn-input>
-            </mn-card-body>
-          </mn-card-item>
           <!-- 图片-->
           <mn-card-item v-if="data.type==='banner'">
             <mn-card-prefix>
@@ -269,6 +258,17 @@
             </mn-card-prefix>
             <mn-card-body>
               <mn-input v-model="form.src"></mn-input>
+            </mn-card-body>
+          </mn-card-item>
+          <!-- url-->
+          <mn-card-item v-if="data.type==='banner'">
+            <mn-card-prefix>
+              <mn-label>
+              链接:
+              </mn-label>
+            </mn-card-prefix>
+            <mn-card-body>
+              <mn-input v-model="form.url"></mn-input>
             </mn-card-body>
           </mn-card-item>
           <!-- 链接-->
@@ -319,6 +319,7 @@
             <mn-card-body>
               <mn-icon :name="icons.plus"></mn-icon>
               <a href="javascript:void(0)" @click="addMore()">新增</a>
+              <a href="javascript:void(0)" @click="update()" v-if="show" style="margin-left: 20px">修改</a>
             </mn-card-body>
           </mn-card-item>
         </div>
@@ -326,19 +327,23 @@
           <mn-card-body>
             <ul class="items-list" v-if="data.type==='banner'">
               <li v-for="(item, index) of data.items" v-if="item.src!==''||item.url!==''" :key="index">
-              <div>[ 图片：{{ item.src.length>8?item.src.substring(0,8)+'...':item.src }}, 链接：{{ item.url.length>8?item.url.substring(0,8)+'...':item.url }} ]</div>
+              <div @click="editItem(index)" class="pointer" title="修改">
+                [ 图片：{{ item.src.length>8?item.src.substring(0,8)+'...':item.src }}, 链接：{{ item.url.length>8?item.url.substring(0,8)+'...':item.url }} ]
+              </div>
               <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
               </li>
             </ul>
             <ul class="items-list" v-if="data.type==='product'">
               <li v-for="(item, index)  of data.items" v-if="item.intro!==''">
-                <div>[ 介绍：{{ item.intro.length>8?item.intro.substring(0,8)+'...':item.intro }}]</div>
+                <div @click="editItem(index)" class="pointer" title="修改">
+                  [ 介绍：{{ item.intro.length>8?item.intro.substring(0,8)+'...':item.intro }}]
+                </div>
                 <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
               </li>
             </ul>
             <ul class="items-list" v-if="data.type==='tab'">
               <li v-for="(item, index)  of data.items" v-if="item.target!==''||item.text!==''">
-                <div>
+                <div @click="editItem(index)" class="pointer" title="修改">
                   [ 链接：{{ item.target.length>8?item.target.substring(0,8)+'...':item.target }}, tab名：{{ item.text.length>8?item.text.substring(0,8)+'...':item.text }} ]
                 </div>
                 <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
@@ -346,7 +351,7 @@
             </ul>
             <ul class="items-list" v-if="data.type==='products'">
               <li v-for="(item, index)  of data.items" v-if="item.sku!==''||item.tip!==''">
-                <div>
+                <div @click="editItem(index)">
                   [ sku：{{ item.sku.length>8?item.sku.substring(0,8)+'...':item.sku }}, 标签：{{ item.tip.length>8?item.tip.substring(0,8)+'...':item.tip }}]
                 </div>
                 <span @click="remove(index)"><mn-icon :name="icons.iosCloseOutline"></mn-icon></span>
@@ -426,7 +431,9 @@ export default {
         }
       ],
       padding: [],
-      margin: []
+      margin: [],
+      index: undefined,
+      show: false
     }
   },
   components: {
@@ -476,6 +483,15 @@ export default {
       this[type].forEach(key => {
         this.data[type] += key.trim() + ' '
       })
+    },
+    editItem (index) {
+      this.index = index
+      this.show = true
+      this.$emit('editItem', index)
+    },
+    update () {
+      this.show = false
+      this.$emit('update', this.index)
     }
   },
   computed: {
@@ -537,5 +553,9 @@ export default {
         border-left-color: #3385ff;
       }
     }
+  }
+
+  .pointer {
+    cursor: pointer;
   }
 </style>

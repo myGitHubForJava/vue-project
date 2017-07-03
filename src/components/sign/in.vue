@@ -84,7 +84,6 @@
 
         this.$store.dispatch('user.signIn', this.models)
           .then(response => {
-            console.log(1)
             form.loading = false
             this.$refs.submit.loading = false
             Message.create({type: 'success', message: '登录成功'}).show()

@@ -81,16 +81,18 @@
                       <mn-column desktop="2">
                         <div>创建人: {{ scope.item.CreatedBy }}</div>
                       </mn-column>
-                      <mn-column desktop="3">
+                      <mn-column desktop="2">
                         <div>创建时间: {{ scope.item.CreatedAt }}</div>
                       </mn-column>
-                      <mn-column desktop="3">
+                      <mn-column desktop="2">
                         <div>更新时间: {{ scope.item.UpdatedAt }}</div>
                       </mn-column>
                       <mn-column desktop="2">
                         <div>
-                          <mn-btn theme="primary" size="sm" @click.native="editTemplate(scope.item)">编辑</mn-btn>
-                          <mn-btn theme="primary" size="sm" @click.native="viewTemplate(scope.item)">预览</mn-btn>
+                          <mn-btn theme="default" size="sm" @click.native="editTemplate(scope.item)" style="color:#aaa;">
+                          编辑</mn-btn>
+                          <mn-btn theme="default" size="sm" @click.native="viewTemplate(scope.item)" style="color:#aaa;">
+                          预览</mn-btn>
                         </div>
                       </mn-column>
                     </mn-columns>
