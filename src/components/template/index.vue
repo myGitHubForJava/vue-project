@@ -3,12 +3,14 @@
     <mn-dashboard-brand slot="brand" class="brand"
       @click.native="$router.push({name:'homepage'})">
       <mn-icon :name="logo" :width="100"></mn-icon>
+
     </mn-dashboard-brand>
 
     <mn-side-bar slot="sideBar" :show.sync="showSidebar">
       <mn-scroller name="dashboard-side">
-        <mn-section>
-          <mn-side-bar-menu :menu="menu"></mn-side-bar-menu>
+        <mn-side-bar-menu :menu="menu"></mn-side-bar-menu>
+        <mn-section class="profile-box">
+          <mn-btn block theme="default" @click.native="signOut">注销</mn-btn>
         </mn-section>
       </mn-scroller>
     </mn-side-bar>
@@ -30,7 +32,7 @@
                     <mn-column desktop="6">
                       <controller-bar class="has-two-margin-bottom">
                         <label slot="prefix">名称:</label>
-                        <mn-input v-model="searchForm.name" placeholder="名称搜索"></mn-input>
+                        <mn-input v-model="searchForm.Title" placeholder="名称搜索"></mn-input>
                       </controller-bar>
                     </mn-column>
                     <mn-column desktop="6">
@@ -49,7 +51,7 @@
                     </mn-column>
                     <mn-column desktop="6">
                       <controller-bar class="has-two-margin-bottom">
-                        <label slot="prefix">创建人:</label>
+                        <label slot="prefix">创建时间:</label>
                         <div>
                     <mn-datetime-picker :display="`${searchForm.startDate} 至 ${searchForm.endDate}`" @openPicker="      onOpenRange"></mn-datetime-picker>
                         </div>
@@ -129,12 +131,13 @@
   import logo from './logo'
   import dashboard from 'vue-human/suites/dashboard'
   import sideBar from 'vue-human/suites/sideBar'
+  import Confirm from 'vue-human/utils/Confirm'
 
   export default {
     data () {
       return {
         searchForm: {
-          name: '',
+          Title: '',
           address: '',
           createBy: '',
           startDate: '2017-05-20 08:30:00',
@@ -211,6 +214,7 @@
         .then(response => {
           this.tableData = response.data
           this.loading = false
+          console.log(this.tableData)
         }).catch(error => {
           this.loading = false
           console.log(error)
@@ -228,6 +232,14 @@
       },
       createtemplate () {
         this.$router.push({path: '/create'})
+      },
+      signOut () {
+        Confirm.create({ title: '确认注销', description: '确定退出吗?' }).show()
+          .$on('confirm', () => {
+            window.localStorage.removeItem('USERTOKEN')
+            this.$store.dispatch('user.signOut')
+            this.$router.push({name: 'signIn'})
+          })
       }
     },
     mounted () {

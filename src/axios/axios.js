@@ -1,23 +1,39 @@
+import Vue from 'vue'
 import axios from 'axios'
-import isUndefined from 'lodash/isUndefined'
-import AxiosHelper from './AxiosHelper'
+import store from '../store/index'
+import router from '../router'
+import Message from 'vue-human/utils/Message'
 
-let request
-
-export default function (config) {
-  if (isUndefined(request)) {
-    // Create AxiosHelper instance
-    const axiosHelper = new AxiosHelper()
-
-    // Create Axios instance and configure it
-    request = axios.create(axiosHelper.config())
-
-    // Listen response
-    request.interceptors.response.use(null, error => {
-      axiosHelper.error(error)
-      return Promise.reject(error)
-    })
+axios.interceptors.response.use(function (response) {
+  return response
+}, function (error) {
+  if (error.config.url.indexOf('login') > -1) {
+    return Promise.reject(error)
   }
 
-  return request(config)
+  if (error.response) {
+    if (error.response.status === 401) {
+      console.log(1111)
+      Message.create({type: 'error', message: error.response.data.message}).show()
+      router.push({name: 'signIn'})
+    } else {
+      Message.create({type: 'error', message: error.response.data.message}).show()
+    }
+  } else {
+    Message.create({type: 'error', message: '服务可能断掉了哦,建议稍后重试'}).show()
+  }
+  return Promise.reject(error)
+})
+
+export default function (config) {
+  return axios({
+    ...{
+      baseURL: Vue.env.get('API'),
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${store.state.user.token.token}`
+      }
+    },
+    ...config
+  })
 }

@@ -1,5 +1,5 @@
 import { signIn } from '../../axios/user'
-import { UPDATE_AUTH_TOKEN } from '../mutation-types'
+import { UPDATE_AUTH_TOKEN, CLEAR_AUTH_TOKEN } from '../mutation-types'
 
 const namespace = 'user'
 
@@ -9,5 +9,8 @@ export default {
       commit(UPDATE_AUTH_TOKEN, response.data)
       return response
     })
+  },
+  [`${namespace}.signOut`] ({ commit }) {
+    commit(CLEAR_AUTH_TOKEN)
   }
 }

@@ -94,7 +94,12 @@
           })
           .catch(error => {
             if (error.response) {
-              if (error.response.status !== 404) {
+              if (error.response.status === 401) {
+                this.$message({
+                  type: 'error',
+                  message: '账号或者密码错误...'
+                })
+              } else if (error.response.status !== 404) {
                 this.$message({
                   type: 'error',
                   message: error.response.data.message
@@ -113,6 +118,8 @@
                 duration: 0
               })
             }
+            form.loading = false
+            this.$refs.submit.loading = false
           })
       }
     }

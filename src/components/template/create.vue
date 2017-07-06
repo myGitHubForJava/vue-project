@@ -328,7 +328,7 @@
         this.formData = JSON.parse(JSON.stringify(this.lists[index].data))
         switch (this.formData.type) {
           case 'tab' : {
-            this.config.data.splice(0, 0, this.formData)
+            this.config.data.unshift(this.formData)
             break
           }
           case 'other':
